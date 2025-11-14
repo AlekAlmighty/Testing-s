@@ -1,0 +1,227 @@
+:root {
+  --panel-green: #2ecc71;
+  --panel-green-dark: #27ae60;
+  --bg-light: #f6f5f7;
+  --transition-speed: 0.7s;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  width: 900px;
+  max-width: 100%;
+  min-height: 550px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  overflow: hidden;
+  display: flex;
+  background: #fff;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("login/forms.jpg") center/cover no-repeat;
+  filter: opacity(0.05);
+  z-index: 0;
+}
+
+.form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 30px;
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+}
+
+form h1 {
+  margin-bottom: 10px;
+  font-size: 26px;
+  color: #333;
+}
+
+form input,
+form select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+form input:focus,
+form select:focus {
+  border-color: var(--panel-green);
+  outline: none;
+  box-shadow: 0 0 6px rgba(46, 204, 113, 0.4);
+}
+
+form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%232ecc71' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+form button {
+  padding: 12px;
+  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+}
+
+form p {
+  font-size: 13px;
+  color: #555;
+}
+
+form a {
+  color: var(--panel-green);
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+form a:hover {
+  color: var(--panel-green-dark);
+}
+
+.login-container {
+  left: 0;
+  opacity: 1;
+}
+
+.register-container {
+  right: 0;
+  opacity: 1;
+}
+
+.container.active .login-container {
+  transform: none;
+  opacity: 1;
+}
+
+.container.active .register-container {
+  transform: none;
+  opacity: 1;
+}
+
+.cover-panel {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  background: var(--panel-green);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform var(--transition-speed) ease-in-out;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.container.active .cover-panel {
+  transform: translateX(-100%);
+}
+
+.cover-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cover-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 0;
+}
+
+.cover-content h1,
+.cover-content p,
+.cover-content .panel-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cover-content h1 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.cover-content p {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.cover-login {
+  opacity: 1;
+  pointer-events: auto;
+  background-image: url("login/login.jpg");
+}
+
+.cover-register {
+  background-image: url("login/register.jpg");
+}
+
+.container.active .cover-login {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-30px);
+}
+
+.container.active .cover-register {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}

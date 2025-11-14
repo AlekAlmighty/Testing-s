@@ -1,0 +1,108 @@
+:root {
+  --panel-green: #2ecc71;
+  --panel-green-dark: #27ae60;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.profile-container {
+  position: relative;
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  width: 520px;
+  max-width: 95%;
+  overflow: hidden;
+}
+
+.profile-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("profile/forms.jpg") center/cover no-repeat;
+  opacity: 0.05;
+  z-index: 0;
+}
+
+form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+form h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #000;
+  text-align: center;
+}
+
+form input,
+form textarea {
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  resize: none;
+  background: rgba(255,255,255,0.9);
+}
+
+form textarea {
+  min-height: 80px;
+}
+
+form button {
+  margin-top: 15px;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(46, 204, 113, 0.45);
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.date-label {
+  background: var(--panel-green);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.date-row input[type="date"] {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  background: rgba(255,255,255,0.9);
+}

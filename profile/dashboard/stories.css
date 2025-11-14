@@ -1,0 +1,316 @@
+
+* {
+	box-sizing: border-box;
+	font-family: 'Arial', Helvetica, sans-serif;
+}
+/* -----------------------------
+   Scoped Stories Styles (#stories)
+   ----------------------------- */
+
+#stories * {
+	box-sizing: border-box;
+	font-family: 'Arial', Helvetica, sans-serif;
+}
+
+#stories {
+	--max-width: 1100px;
+	--green: #2b8a3e;
+	--muted: #6b6b6b;
+	--card-bg: #ffffff;
+	--page-bg: #f3f7f2;
+	color: #1b2730;
+}
+
+#stories .stories-header{
+	background: var(--green);
+	color: white;
+	padding: 14px 0;
+}
+
+#stories .header-container{
+	max-width: var(--max-width);
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 18px;
+}
+
+#stories .logo a{
+	color: white;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 22px;
+}
+
+#stories .nav-links a{
+	color: white;
+	text-decoration: none;
+	margin-left: 18px;
+	padding: 8px 12px;
+	border-radius: 6px;
+}
+
+#stories .nav-links a.active{
+	background: rgba(255,255,255,0.12);
+}
+
+#stories .stories-main{
+	max-width: var(--max-width);
+	margin: 22px auto;
+	padding: 0 18px 60px;
+}
+
+/* Create post form (top) */
+#stories .create-post{
+	background: var(--card-bg);
+	padding: 24px;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	margin-bottom: 24px;
+	max-width: 680px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#stories .create-post h2{
+	margin: 0 0 16px;
+	font-size: 20px;
+	color: #1c1e21;
+	font-weight: 600;
+}
+
+#stories .create-post .form-grid{
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+#stories .create-post label{
+	color: #1c1e21;
+	display: block;
+	margin-bottom: 8px;
+	font-size: 15px;
+}
+
+#stories .file-input{
+	background: #f0f2f5;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid #ccd0d5;
+}
+
+#stories #desc-input{
+	width: 100%;
+	min-height: 100px;
+	padding: 12px;
+	border: 1px solid #ccd0d5;
+	border-radius: 8px;
+	resize: vertical;
+	font-size: 15px;
+	background: #f0f2f5;
+	color: #1c1e21;
+}
+
+#stories #post-btn{
+	background: var(--green);
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 15px;
+	width: 100%;
+	transition: background 0.2s;
+}
+
+#stories #post-btn:hover{
+	background: #237032;
+}
+
+#stories .create-post .submit-wrap{
+	margin-top: 8px;
+}
+
+
+/* Posts feed */
+#stories .posts-feed h2{ margin: 6px 0 14px; }
+
+#stories #posts-container{
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 14px;
+}
+
+
+#stories .post{
+	background: var(--card-bg);
+	padding: 16px;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	margin-bottom: 16px;
+	max-width: 680px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#stories .post .meta{
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+#stories .post .meta .author{
+	font-weight: 600;
+	font-size: 15px;
+	color: #050505;
+}
+
+#stories .post .meta .time{
+	color: #65676b;
+	font-size: 13px;
+}
+
+#stories .post .image-wrapper{
+	width: calc(100% + 32px);
+	margin: 12px -16px;
+	background: #f0f2f5;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#stories .post img{
+	max-width: 100%;
+	max-height: 500px;
+	object-fit: contain;
+	display: block;
+}
+
+#stories .post .desc{
+	margin: 12px 0;
+	font-size: 15px;
+	line-height: 1.5;
+	color: #050505;
+}
+
+/* Actions bar */
+#stories .post .actions{
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: 8px 0;
+	margin: 4px 0;
+	border-top: 1px solid #ced0d4;
+	border-bottom: 1px solid #ced0d4;
+}
+
+#stories .action-btn{
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 6px;
+	cursor: pointer;
+	border: none;
+	background: transparent;
+	font-size: 15px;
+	font-weight: 600;
+	color: #65676b;
+	border-radius: 4px;
+	transition: background 0.2s;
+}
+
+#stories .action-btn:hover{
+	background: #f2f2f2;
+}
+
+#stories .action-btn.liked{
+	color: var(--green);
+}
+
+#stories .action-btn.disliked{
+	color: #c0392b;
+}
+
+/* Comments section */
+#stories .comments{
+	margin-top: 8px;
+}
+
+#stories .comment{
+	padding: 8px 12px;
+	border-radius: 18px;
+	background: #f0f2f5;
+	margin-bottom: 8px;
+	font-size: 14px;
+}
+
+#stories .comment strong{
+	font-weight: 600;
+	color: #050505;
+}
+
+#stories .comment-form{
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+	align-items: center;
+}
+
+#stories .comment-form input{
+	flex: 1;
+	padding: 8px 16px;
+	border: 1px solid #ccd0d5;
+	border-radius: 20px;
+	font-size: 14px;
+	background: #f0f2f5;
+	transition: background 0.2s;
+}
+
+#stories .comment-form input:focus{
+	background: white;
+	outline: none;
+	border-color: var(--green);
+}
+
+#stories .comment-form button{
+	background: var(--green);
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 20px;
+	font-weight: 600;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+#stories .comment-form button:hover{
+	background: #237032;
+}
+
+#stories .small-muted{ color: var(--muted); font-size:13px }
+
+/* Responsive: stack on small screens */
+@media (max-width:800px){
+	#stories .header-container{ padding: 0 12px }
+	#stories .stories-main{ padding: 0 12px 40px }
+	#stories .create-post .form-grid{ grid-template-columns: 1fr; }
+	#stories .create-post .submit-wrap{ flex-direction:row; justify-content:space-between }
+	#stories .post{ grid-template-columns: 1fr; gap:12px; }
+	#stories .post .image-wrapper{ width:100%; height:180px }
+	#stories .post .reactions{ flex-direction:row; justify-content:space-between; width:100% }
+}
+
+/* Edit UI inside posts */
+#stories .edit-wrap{ display:flex; flex-direction:column; gap:8px; }
+#stories .edit-textarea{ width:100%; min-height:100px; padding:10px; border-radius:8px; border:1px solid #ccd0d5; font-size:15px; }
+#stories .edit-controls{ display:flex; gap:8px; }
+#stories .edit-controls .save-edit{ background:var(--green); color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer }
+#stories .edit-controls .cancel-edit{ background:#f0f2f5; color:#333; border:none; padding:8px 12px; border-radius:6px; cursor:pointer }
+ 

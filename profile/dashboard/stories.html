@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breathe Green - Stories</title>
+  <link rel="stylesheet" href="stories.css">
+</head>
+<body>
+  <header class="stories-header">
+    <div class="header-container">
+      <div class="logo"><a href="dashboard.html">Breathe Green</a></div>
+      <nav class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="stories.html" class="active">Stories</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="stories-main">
+    <section class="create-post">
+      <h2>Share your story</h2>
+      <form id="post-form">
+        <div class="form-grid">
+          <div class="file-input">
+            <label for="image-input">Choose image (optional)</label>
+            <input type="file" id="image-input" accept="image/*">
+          </div>
+
+          <div class="desc-input-wrap">
+            <label for="desc-input">Description</label>
+            <textarea id="desc-input" rows="4" placeholder="Write about your journey..."></textarea>
+          </div>
+
+          <div class="submit-wrap">
+            <div class="spacer"></div>
+            <button type="submit" id="post-btn">Post Story</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="posts-feed">
+      <h2>Community Stories</h2>
+      <div id="posts-container">
+        <!-- Sample posts for layout/preview -->
+        <article class="post">
+          <div class="meta">
+            <div class="author">Rhea</div>
+            <div class="time small-muted">Invalid Date</div>
+          </div>
+          <div class="image-wrapper">
+            <img src="../dashboard/breathing.jpg" alt="calendar" />
+          </div>
+          <div class="content">
+            <div class="desc">Lost my streak once but got back up. That reset didn't mean failure, it meant I learned what triggers me.</div>
+          </div>
+          <div class="reactions">
+            <div class="reaction-row">
+              <div class="reaction-count"><span class="reaction-emoji">👍</span> <span>2</span></div>
+              <div class="reaction-count"><span class="reaction-emoji">👎</span> <span>1</span></div>
+            </div>
+            <div class="comment-box">
+              <input placeholder="Write a comment" />
+              <button>Comment</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="post">
+          <div class="meta">
+            <div class="author">Miguel</div>
+            <div class="time small-muted">Invalid Date</div>
+          </div>
+          <div class="image-wrapper">
+            <img src="../dashboard/money.png" alt="jar" />
+          </div>
+          <div class="content">
+            <div class="desc">I used a jar to track money saved and it really motivates me. First week was hard but the cravings passed quicker each day.</div>
+          </div>
+          <div class="reactions">
+            <div class="reaction-row">
+              <div class="reaction-count"><span class="reaction-emoji">👍</span> <span>3</span></div>
+              <div class="reaction-count"><span class="reaction-emoji">👎</span> <span>0</span></div>
+            </div>
+            <div class="comment-box">
+              <div class="small-muted"><strong>Ana:</strong> Inspiring!</div>
+              <input placeholder="Write a comment" />
+              <button>Comment</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Additional sample posts can go here -->
+      </div>
+    </section>
+  </main>
+
+  <script src="stories.js"></script>
+</body>
+</html>

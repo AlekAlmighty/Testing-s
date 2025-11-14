@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breathe Green - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="stories.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <div class="header-container">
+      <div class="logo">Breathe Green</div>
+      <nav class="nav-links">
+        <a href="#" class="active" data-target="home">Home</a>
+        <a href="#" data-target="help">Help</a>
+        <a href="#" data-target="money">Money Saved</a>
+        <a href="#" data-target="milestones">Milestones</a>
+        <a href="#" data-target="environment">Environment</a>
+        <a href="#" id="stories-link" data-target="stories">Stories</a>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="content-section active">
+      <div class="motivation-card">
+        <p id="daily-motivation">STAY STRONG, YOU'RE DOING AMAZING!</p>
+      </div>
+      <div class="overview-grid">
+        <div class="card highlight" id="money-saved-container">
+          <h3>MONEY SAVED</h3>
+          <p id="money-saved">₱0</p>
+        </div>
+        <div class="card highlight" id="streak-container">
+          <h3>DAYS STREAK</h3>
+          <p id="streak-days">0 Days</p>
+        </div>
+        <div class="card highlight" id="cigs-container">
+          <h3>CIGARETTES NOT SMOKED</h3>
+          <p id="cigarettes-avoided">0</p>
+        </div>
+        <div class="card highlight" id="environmental-impact-container">
+          <h3>ENVIRONMENTAL IMPACT</h3>
+          <p id="env-impact">0 lbs. helped</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="help" class="content-section">
+      <div class="help-grid">
+        <div class="card help-card" id="breathing-card">
+          <h3>4-2-4 BREATHING TECHNIQUE</h3>
+          <p>The 4-2-4 breathing technique involves inhaling for 4 seconds, holding for 2, and exhaling for 4.</p>
+          <br>
+          <p>It activates the parasympathetic nervous system, reducing stress and promoting relaxation.</p>
+          <br>
+          <p>Research shows it lowers heart rate, blood pressure, and stress hormones, while improving focus and emotional control.</p>
+          <br>
+          <p>Overall, it is a simple, evidence-based method to enhance mental and physical well-being.</p>
+          <br>
+          <button class="help-btn" id="start-breathing">Start</button>
+          <button id="exit-breathing">Exit</button>
+        </div>
+
+        <div class="card help-card" id="games-card">
+          <h3>QUICK GAMES</h3>
+          <p>Play short mini-games to distract yourself from cravings.</p>
+          <button class="help-btn" id="play-mini-games">Play Mini Games</button>
+        </div>
+        <div class="card help-card" id="reasons-card">
+          <h3>REASONS TO QUIT</h3>
+          <p>Write and revisit your personal reasons for quitting.</p>
+          <button class="help-btn" id="open-notepad">Open Notepad</button>
+        </div>
+
+        <div id="notepad-overlay" aria-hidden="true">
+          <div class="notepad-window">
+            <div class="notepad-header">
+              <h4>My Reasons to Quit</h4>
+              <button id="close-notepad" class="notepad-close">×</button>
+            </div>
+
+            <div class="notepad-body">
+              <textarea
+                id="reason-text"
+                placeholder="Write your reason here..."
+              ></textarea>
+              <button id="add-reason" class="notepad-add">Save Reason</button>
+              <ul id="reasons-list">
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="money" class="content-section">
+      <div class="money-header">
+        <h1>₱0 Saved</h1>
+        <p>Since you quit on January 5, 2025</p>
+      </div>
+
+      <div class="savings-grid">
+        <div class="savings-card">
+          <h4>Daily Savings</h4>
+          <p>₱0</p>
+        </div>
+        <div class="savings-card">
+          <h4>Weekly Savings</h4>
+          <p>₱0</p>
+        </div>
+        <div class="savings-card">
+          <h4>Monthly Savings</h4>
+          <p>₱0</p>
+        </div>
+      </div>
+
+      <div class="goal-section">
+        <h3>Next Goal: ₱<span id="editable-goal" contenteditable="true">7000</span></h3>
+        <div class="goal-bar">
+          <div class="goal-progress" style="width: 46%;"></div>
+        </div>
+        <p class="goal-progress-text">₱3,240 of ₱7,000 reached</p>
+      </div>
+
+      <div class="chart-section">
+        <canvas id="savingsChart"></canvas>
+      </div>
+
+      <div class="buy-section">
+        <h3>What You Could Buy 💸</h3>
+        <ul>
+          <li>👟 A new pair of running shoes</li>
+          <li>🍽️ 3 nice dinners out</li>
+          <li>💪 2 months of gym membership</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="milestones" class="content-section">
+      <div class="milestones-container">
+        
+        <div class="milestone-header">
+          <h1 id="milestone-days">Smoke-Free Progress</h1>
+          <p id="milestone-summary">Tracking your journey...</p>
+        </div>
+
+        <div class="milestone-card">
+          <h3>🎯 Journey Timeline</h3>
+          <ul id="milestone-timeline" class="milestone-timeline"></ul>
+        </div>
+
+        <div class="milestone-card">
+          <h3>💰 Financial Milestones</h3>
+          <ul id="milestone-financial" class="milestone-financial"></ul>
+        </div>
+
+        <div class="milestone-card">
+          <h3>💪 Health Milestones</h3>
+          <table class="milestone-health">
+            <thead>
+              <tr><th>Time Smoke-Free</th><th>Health Benefit</th></tr>
+            </thead>
+            <tbody id="milestone-health-body"></tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="environment" class="content-section">
+      <div class="environment-header">
+        <h1>Your Environmental Impact</h1>
+        <p>Every cigarette you skip helps heal the planet 🌎</p>
+      </div>
+
+      <div class="environment-grid">
+        <div class="environment-card">
+          <h3>🌿 CO₂ Prevented</h3>
+          <p id="co2-prevented">0 kg</p>
+        </div>
+        <div class="environment-card">
+          <h3>🌲 Trees Saved</h3>
+          <p id="trees-saved">0</p>
+        </div>
+        <div class="environment-card">
+          <h3>💧 Toxins Avoided</h3>
+          <p id="toxins-avoided">0</p>
+        </div>
+      </div>
+
+            <div class="green-goal">
+        <h3>Next Eco Goal</h3>
+        <div class="goal-input-wrap">
+          <label for="ecoGoal">Set your target (kg of CO₂)</label>
+          <input type="number" id="ecoGoal" value="100" min="10" step="10" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="goal-bar">
+          <div class="goal-progress" id="ecoGoalProgress" style="width: 0%;"></div>
+        </div>
+        <p id="ecoGoalText">0 of 100 kg prevented</p>
+      </div>
+
+      <div class="environment-chart-container">
+        <h3>Air Saved Over Time</h3>
+        <canvas id="environmentChart"></canvas>
+      </div>
+    </section>
+
+    <section id="stories" class="content-section" style="display:none;">
+      <main class="stories-main">
+        <section class="create-post">
+          <h2>Share your story</h2>
+          <form id="post-form">
+            <div class="form-grid">
+              <div class="file-input">
+                <label for="image-input">Choose image (optional)</label>
+                <input type="file" id="image-input" accept="image/*">
+              </div>
+              <div class="desc-input-wrap">
+                <label for="desc-input">Description</label>
+                <textarea id="desc-input" rows="4" placeholder="Write about your journey..."></textarea>
+              </div>
+              <div class="submit-wrap">
+                <div class="spacer"></div>
+                <button type="submit" id="post-btn">Post Story</button>
+              </div>
+            </div>
+          </form>
+        </section>
+        <section class="posts-feed">
+          <h2>Community Stories</h2>
+          <div id="posts-container"></div>
+        </section>
+      </main>
+    </section>
+
+    <form id="loginForm" style="display:none;" onsubmit="return false;" novalidate></form>
+  </main>
+
+  <div id="game-overlay" aria-hidden="true">
+    <div class="game-center">
+      <div class="game-header">
+        <div class="game-title">Mini Game Center</div>
+        <button id="game-close" class="game-close" aria-label="Close">×</button>
+      </div>
+      <div class="game-body">
+        <div class="game-menu" id="game-menu">
+          <h3>Choose a game</h3>
+          <div class="game-buttons">
+            <button class="game-select" data-game="reflex">Reflex Challenge</button>
+            <button class="game-select" data-game="clickspeed">Click Speed Test</button>
+            <button class="game-select" data-game="memory">Memory Flip</button>
+          </div>
+        </div>
+        <div class="game-area" id="game-area" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="stories.js"></script>
+</body>
+</html>

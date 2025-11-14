@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breathe Green - Profile Setup</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+  <div class="profile-container">
+    <form>
+      <h1>Profile Setup</h1>
+
+      <div class="date-row">
+        <span class="date-label">Start Date of Quitting</span>
+        <input type="date" id="quitDate" required>
+      </div>
+
+      <input type="number" id="age" placeholder="Age" min="1" required>
+      <textarea id="reasons" placeholder="Reasons to Quit" rows="3" required></textarea>
+      <input type="number" id="cigs" placeholder="Cigarettes Consumed per Day" min="0" required>
+      <input type="number" id="costs" placeholder="Money Costs per Day (₱)" min="0" required>
+
+      <button type="submit">Save & Continue</button>
+    </form>
+  </div>
+</body>
+</html>
