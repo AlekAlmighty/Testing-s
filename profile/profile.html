@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Breathe Green - Profile Setup</title>
   <link rel="stylesheet" href="profile.css">
+  
 </head>
 <body>
   <div class="profile-container">
@@ -24,5 +25,104 @@
       <button type="submit">Save & Continue</button>
     </form>
   </div>
+
+  <script type="module">
+    // Initialize Firebase in this page and connect profile form to Firestore
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACafoJ0E-rJGv0Qz0F5C879ggI8CRSQ3A",
+      authDomain: "breathe-green-7cc38.firebaseapp.com",
+      projectId: "breathe-green-7cc38",
+      storageBucket: "breathe-green-7cc38.firebasestorage.app",
+      messagingSenderId: "219050855571",
+      appId: "1:219050855571:web:5a418b7b9982baa806d166",
+      measurementId: "G-4CZ35QJLJ1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const quitDate = document.getElementById('quitDate');
+      const ageEl = document.getElementById('age');
+      const reasons = document.getElementById('reasons');
+      const cigs = document.getElementById('cigs');
+      const costs = document.getElementById('costs');
+      const form = document.querySelector('.profile-container form');
+
+      // Prefill from sessionStorage if available
+      try {
+        const ud = sessionStorage.getItem('userData');
+        if (ud) {
+          const userData = JSON.parse(ud);
+          if (userData.age) ageEl.value = userData.age;
+          if (userData.quitDate) quitDate.value = userData.quitDate;
+          if (userData.reasons) reasons.value = userData.reasons;
+          if (userData.cigs) cigs.value = userData.cigs;
+          if (userData.costs) costs.value = userData.costs;
+        }
+      } catch (err) {
+        console.warn('Failed to read session userData', err);
+      }
+
+      // Ensure user is authenticated; if not, redirect to login
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = '../login.html';
+          return;
+        }
+
+        // Try to fetch stored profile values from Firestore and prefill
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid));
+          if (snap.exists()) {
+            const d = snap.data();
+            if (d.age) ageEl.value = d.age;
+            if (d.quitDate) quitDate.value = d.quitDate;
+            if (d.reasons) reasons.value = d.reasons;
+            if (d.cigs) cigs.value = d.cigs;
+            if (d.costs) costs.value = d.costs;
+          }
+        } catch (err) {
+          console.warn('Could not fetch user profile from Firestore:', err);
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+          quitDate: quitDate.value || null,
+          age: ageEl.value ? parseInt(ageEl.value, 10) : null,
+          reasons: reasons.value || '',
+          cigs: cigs.value ? parseInt(cigs.value, 10) : 0,
+          costs: costs.value ? parseFloat(costs.value) : 0,
+          lastUpdated: new Date().toISOString()
+        };
+
+        const user = auth.currentUser;
+        if (!user) {
+          alert('You must be logged in to save your profile.');
+          window.location.href = '../login.html';
+          return;
+        }
+
+        try {
+          await setDoc(doc(db, 'users', user.uid), data, { merge: true });
+          // update sessionStorage so other pages can use it
+          const existing = JSON.parse(sessionStorage.getItem('userData') || '{}');
+          sessionStorage.setItem('userData', JSON.stringify(Object.assign({}, existing, data)));
+          // Redirect to dashboard inside profile folder
+          window.location.href = 'dashboard/dashboard.html';
+        } catch (err) {
+          console.error('Failed to save profile:', err);
+          alert('Failed to save profile: ' + (err.message || err));
+        }
+      });
+    });
+  </script>
 </body>
 </html>

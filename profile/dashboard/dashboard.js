@@ -1,3 +1,85 @@
+// Firebase initialization and user data fetching
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyACafoJ0E-rJGv0Qz0F5C879ggI8CRSQ3A",
+  authDomain: "breathe-green-7cc38.firebaseapp.com",
+  projectId: "breathe-green-7cc38",
+  storageBucket: "breathe-green-7cc38.firebasestorage.app",
+  messagingSenderId: "219050855571",
+  appId: "1:219050855571:web:5a418b7b9982baa806d166",
+  measurementId: "G-4CZ35QJLJ1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Check auth state and fetch user profile data
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = '../../login.html';
+    return;
+  }
+
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      console.log('User profile data:', userData);
+      
+      // Store globally so updateMoneyTab, updateEnvironmentTab, updateMilestonesTab can use it
+      window.userProfileData = userData;
+
+      // Calculate and display profile data - increments by 1 day each day based on quit date
+      if (userData.quitDate) {
+        const quitDateObj = new Date(userData.quitDate);
+        
+        // Set time to start of day for accurate calculation
+        quitDateObj.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Calculate days (increments by 1 each day) - ensure never negative
+        let daysSmokeFree = Math.floor((today - quitDateObj) / (1000 * 60 * 60 * 24));
+        daysSmokeFree = Math.max(0, daysSmokeFree);  // Don't show negative days
+        
+        const streakEl = document.getElementById("streak-days");
+        if (streakEl) streakEl.textContent = daysSmokeFree + " Days";
+
+        // Calculate money saved - based on daily cost from profile (never negative)
+        const dailyCost = Math.max(0, userData.costs || 0);
+        const moneySaved = Math.max(0, daysSmokeFree * dailyCost);
+        const moneyEl = document.getElementById("money-saved");
+        if (moneyEl) moneyEl.textContent = "₱" + moneySaved.toLocaleString();
+
+        // Calculate cigarettes not smoked - based on cigs/day from profile (never negative)
+        const cigsPerDay = Math.max(0, userData.cigs || 0);
+        const cigsAvoided = Math.max(0, daysSmokeFree * cigsPerDay);
+        const cigEl = document.getElementById("cigarettes-avoided");
+        if (cigEl) cigEl.textContent = cigsAvoided;
+
+        // Update money saved header with accurate data
+        const moneyHeaderEl = document.querySelector(".money-header h1");
+        if (moneyHeaderEl) moneyHeaderEl.textContent = "₱" + moneySaved.toLocaleString() + " Saved";
+
+        const sinceEl = document.querySelector(".money-header p");
+        if (sinceEl) sinceEl.textContent = "Since you quit on " + quitDateObj.toLocaleDateString();
+      }
+
+      // Display reasons in the notepad
+      if (userData.reasons) {
+        const reasonText = document.getElementById("reason-text");
+        if (reasonText) reasonText.value = userData.reasons;
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to fetch user profile:', err);
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const links = document.querySelectorAll(".nav-links a");
@@ -41,14 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const streakEl = document.getElementById("streak-days");
-  const cigEl = document.getElementById("cigarettes-avoided");
-  const moneyEl = document.getElementById("money-saved");
-  const envEl = document.getElementById("env-impact");
-  if (streakEl) streakEl.textContent = "7 Days";
-  if (cigEl) cigEl.textContent = 14;
-  if (moneyEl) moneyEl.textContent = "₱560";
-  if (envEl) envEl.textContent = "3.5 lbs. helped";
+  // Note: stat values are now populated from Firestore, not hardcoded here
+  // See onAuthStateChanged handler at top of file
 
   const messages = [
     "STAY STRONG, YOU'RE DOING AMAZING!",
@@ -59,6 +135,40 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   const motEl = document.getElementById("daily-motivation");
   if (motEl) motEl.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+  // Add click handlers to redirect cards
+  const moneySavedCard = document.getElementById("money-saved-container");
+  if (moneySavedCard) {
+    moneySavedCard.style.cursor = "pointer";
+    moneySavedCard.addEventListener("click", () => {
+      document.querySelectorAll(".nav-links a").forEach(l => l.classList.remove("active"));
+      document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+      document.querySelector("[data-target='money']").classList.add("active");
+      document.getElementById("money").classList.add("active");
+    });
+  }
+
+  const streakCard = document.getElementById("streak-container");
+  if (streakCard) {
+    streakCard.style.cursor = "pointer";
+    streakCard.addEventListener("click", () => {
+      document.querySelectorAll(".nav-links a").forEach(l => l.classList.remove("active"));
+      document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+      document.querySelector("[data-target='milestones']").classList.add("active");
+      document.getElementById("milestones").classList.add("active");
+    });
+  }
+
+  const cigsCard = document.getElementById("cigs-container");
+  if (cigsCard) {
+    cigsCard.style.cursor = "pointer";
+    cigsCard.addEventListener("click", () => {
+      document.querySelectorAll(".nav-links a").forEach(l => l.classList.remove("active"));
+      document.querySelectorAll(".content-section").forEach(s => s.classList.remove("active"));
+      document.querySelector("[data-target='environment']").classList.add("active");
+      document.getElementById("environment").classList.add("active");
+    });
+  }
 
 
   const reasonsList = document.getElementById("reasons-list");
@@ -496,11 +606,16 @@ if (closeNotepadBtn) {
 }
 
 function updateMoneyTab() {
-  const quitDate = new Date("2025-01-05");
-  const dailyCost = 180;
+  // Get actual user data from dashboard (populated from Firestore at top)
+  const userData = window.userProfileData || {};
+  const quitDate = userData.quitDate ? new Date(userData.quitDate) : new Date();
+  quitDate.setHours(0, 0, 0, 0);
+  const dailyCost = Math.max(0, userData.costs || 0);
   const today = new Date();
-  const daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
-  const totalSaved = daysQuit * dailyCost;
+  today.setHours(0, 0, 0, 0);
+  let daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
+  daysQuit = Math.max(0, daysQuit);  // Ensure non-negative
+  const totalSaved = Math.max(0, daysQuit * dailyCost);
   const weekly = dailyCost * 7;
   const monthly = dailyCost * 30;
 
@@ -549,9 +664,11 @@ function drawSavingsChart(days, dailyCost) {
   const labels = [];
   const dataPoints = [];
   let total = 0;
+  
+  // Generate chart data incrementing by 1 day, based on actual daily cost from profile
   for (let i = 0; i <= days; i++) {
     total += dailyCost;
-    if (i % 2 === 0) {
+    if (i % 2 === 0 || i === days) {  // Show every 2 days + final day
       labels.push(`Day ${i}`);
       dataPoints.push(total);
     }
@@ -589,11 +706,15 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 });
 
 function updateMilestonesTab() {
-  const quitDate = new Date("2025-01-05");
+  const userData = window.userProfileData || {};
+  const quitDate = userData.quitDate ? new Date(userData.quitDate) : new Date();
+  quitDate.setHours(0, 0, 0, 0);
   const today = new Date();
-  const dailyCost = 180;
-  const daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
-  const totalSaved = daysQuit * dailyCost;
+  today.setHours(0, 0, 0, 0);
+  const dailyCost = Math.max(0, userData.costs || 0);
+  let daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
+  daysQuit = Math.max(0, daysQuit);  // Ensure non-negative
+  const totalSaved = Math.max(0, daysQuit * dailyCost);
 
   const daysEl = document.getElementById("milestone-days");
   const summaryEl = document.getElementById("milestone-summary");
@@ -670,11 +791,15 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 });
 
 function updateEnvironmentTab() {
-  const cigarettesPerDay = 10;
+  const userData = window.userProfileData || {};
+  const cigarettesPerDay = Math.max(0, userData.cigs || 0);
   const co2PerCigarette = 0.014;
-  const quitDate = new Date("2025-01-05");
+  const quitDate = userData.quitDate ? new Date(userData.quitDate) : new Date();
+  quitDate.setHours(0, 0, 0, 0);
   const today = new Date();
-  const daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
+  today.setHours(0, 0, 0, 0);
+  let daysQuit = Math.floor((today - quitDate) / (1000 * 60 * 60 * 24));
+  daysQuit = Math.max(0, daysQuit);  // Ensure non-negative
 
   const totalCigs = daysQuit * cigarettesPerDay;
   const co2Prevented = totalCigs * co2PerCigarette;
@@ -704,11 +829,13 @@ if (window.environmentChart instanceof Chart) {
   const labels = [];
   const dataPoints = [];
   let total = 0;
+  
+  // Generate chart data incrementing by 1 day, based on actual cigs/day from profile
   for (let i = 0; i <= days; i++) {
     total += cigsPerDay * co2PerCig;
-    if (i % 2 === 0) {
+    if (i % 2 === 0 || i === days) {  // Show every 2 days + final day
       labels.push(`Day ${i + 1}`);
-      dataPoints.push(total);
+      dataPoints.push(parseFloat(total.toFixed(3)));
     }
   }
 

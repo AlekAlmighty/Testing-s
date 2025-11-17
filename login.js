@@ -20,14 +20,8 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
-// Try to enable IndexedDB persistence so reads/writes work offline when possible.
-// This is best-effort and will fail in some environments (multiple tabs, private mode).
-try {
-  await enableIndexedDbPersistence(db);
-  console.log('Firestore persistence enabled');
-} catch (persistenceErr) {
-  console.warn('Could not enable persistence (this is non-fatal):', persistenceErr);
-}
+// Note: Avoid enableIndexedDbPersistence which can delay initialization
+// Firebase will use IndexedDB automatically if available
 
 const container = document.getElementById('container');
 const switchToRegister = document.getElementById('switchToRegister');
@@ -164,11 +158,13 @@ document.querySelector('.register-container form').addEventListener('submit', as
     // Create user with email and password
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    console.log('User created in Firebase Auth:', user.uid);
 
     // Update user profile with full name
     await updateProfile(user, {
       displayName: fullName
     });
+    console.log('User profile updated');
 
     // Store additional user data in Firestore
     const userData = {
@@ -184,6 +180,7 @@ document.querySelector('.register-container form').addEventListener('submit', as
     // Create a document in the 'users' collection with the user's UID as the document ID
     try {
       await setDoc(doc(db, 'users', user.uid), userData);
+      console.log('Firestore document created');
     } catch (setErr) {
       console.warn('Failed to write user document to Firestore:', setErr);
       // If offline, inform the user that their profile will sync when back online
@@ -192,14 +189,15 @@ document.querySelector('.register-container form').addEventListener('submit', as
           successDiv.textContent = 'Account created! Profile data will be saved when you reconnect. A verification email may be sent when online.';
         }
       } else {
-        // unknown error: rethrow so outer catch will handle it
-        throw setErr;
+        console.error('Firestore error during registration:', setErr);
+        // Continue anyway; we'll show success since the user account exists
       }
     }
 
     // Send email verification (modular SDK)
     try {
       await sendEmailVerification(user);
+      console.log('Verification email sent');
     } catch (sendErr) {
       // Non-fatal: verification email failed to send — we'll continue but log it
       console.error('Failed to send verification email:', sendErr);
@@ -217,17 +215,16 @@ document.querySelector('.register-container form').addEventListener('submit', as
     registerButton.textContent = 'Account Created';
     console.log('User created:', user.uid);
 
-    // Clear the form
-    this.reset();
+    // Store user data in sessionStorage for use in profile page
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+    console.log('About to redirect to profile/profile.html');
 
-    // Switch to login form after 1.5 seconds
-    setTimeout(() => {
-      container.classList.remove('active');
-      registerButton.disabled = false;
-      registerButton.textContent = 'Register';
-    }, 1500);
+    // Redirect to profile page after successful registration
+    window.location.href = "profile/profile.html";
+    console.log('Redirect initiated');
 
   } catch (error) {
+    console.error('Registration error caught:', error);
     registerButton.disabled = false;
     registerButton.textContent = 'Register';
     
