@@ -37,7 +37,7 @@ npm start
 
 4. Open the site in a browser:
 
-- `http://localhost:3000/login.html`
+- `http://localhost:3000/index.html`
 
 Test the AI endpoint directly (example):
 

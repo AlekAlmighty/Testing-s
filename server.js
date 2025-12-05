@@ -70,7 +70,7 @@ app.post('/api/ai/assess', async (req, res) => {
   }
 });
 
-// Serve static app files from the current directory (so your login.html is reachable)
+// Serve static app files from the current directory (so your index.html is reachable)
 app.use(express.static(path.join(__dirname)));
 
 app.listen(PORT, () => {
