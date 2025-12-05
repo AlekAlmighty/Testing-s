@@ -1,11 +1,16 @@
+*,
+*::before,
+*::after {
+  font-family: "Baloo 2", sans-serif !important;
+}
+
 :root {
-  --panel-green: #2ecc71;
-  --panel-green-dark: #27ae60;
+  --main-green: #00cd63;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  font-family: "Baloo 2", sans-serif;
+  background: #fff;
   background-repeat: repeat;
   background-size: 200px 200px;
   display: flex;
@@ -67,7 +72,7 @@ form textarea {
 form button {
   margin-top: 15px;
   padding: 14px;
-  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  background: var(--main-green);
   border: none;
   border-radius: 10px;
   color: #fff;
@@ -79,7 +84,7 @@ form button {
 
 form button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(46, 204, 113, 0.45);
+  box-shadow: 0 6px 18px rgba(0, 205, 99, 0.45);
 }
 
 .date-row {
@@ -89,7 +94,7 @@ form button:hover {
 }
 
 .date-label {
-  background: var(--panel-green);
+  background: var(--main-green);
   color: #fff;
   padding: 10px 14px;
   border-radius: 8px;

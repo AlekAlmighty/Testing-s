@@ -32,6 +32,8 @@ onAuthStateChanged(auth, async (user) => {
       
       // Store globally so updateMoneyTab, updateEnvironmentTab, updateMilestonesTab can use it
       window.userProfileData = userData;
+      // Notify other parts of the app that profile data is available
+      try { window.dispatchEvent(new Event('userProfileDataUpdated')); } catch (e) { /* ignore */ }
 
       // Calculate and display profile data - increments by 1 day each day based on quit date
       if (userData.quitDate) {
@@ -81,6 +83,160 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  // === DEBUG SECTION FUNCTIONALITY ===
+  const debugInput = document.getElementById("debug-days-input");
+  const debugApplyBtn = document.getElementById("debug-apply-btn");
+  const debugMoneyEl = document.getElementById("debug-money");
+  const debugCigsEl = document.getElementById("debug-cigs");
+  const debugStreakEl = document.getElementById("debug-streak");
+  const debugCo2El = document.getElementById("debug-co2");
+  const debugProfileInfo = document.getElementById("debug-profile-info");
+
+  console.log("Debug elements loaded:", { debugInput, debugApplyBtn, debugMoneyEl });
+
+  function updateDebugDisplay() {
+    const userData = window.userProfileData || {};
+    const inputDays = parseInt(debugInput.value) || 0;
+    const dailyCost = Math.max(0, userData.costs || 0);
+    const cigsPerDay = Math.max(0, userData.cigs || 0);
+    const co2PerCigarette = 0.014;
+
+    // Calculate values based on input days
+    const moneySaved = Math.max(0, inputDays * dailyCost);
+    const cigsAvoided = Math.max(0, inputDays * cigsPerDay);
+    const co2Prevented = cigsAvoided * co2PerCigarette;
+
+    // Update display
+    if (debugMoneyEl) debugMoneyEl.textContent = "₱" + moneySaved.toLocaleString();
+    if (debugCigsEl) debugCigsEl.textContent = cigsAvoided;
+    if (debugStreakEl) debugStreakEl.textContent = inputDays + " Days";
+    if (debugCo2El) debugCo2El.textContent = co2Prevented.toFixed(2) + " kg";
+
+    // Update profile info display
+    if (debugProfileInfo) {
+      debugProfileInfo.innerHTML = `
+        <li><strong>Days Input:</strong> ${inputDays}</li>
+        <li><strong>Daily Cost (₱):</strong> ${dailyCost}</li>
+        <li><strong>Cigs/Day:</strong> ${cigsPerDay}</li>
+        <li><strong>CO₂ per Cig:</strong> ${co2PerCigarette} kg</li>
+        <li><strong>Quit Date:</strong> ${userData.quitDate ? new Date(userData.quitDate).toLocaleDateString() : 'N/A'}</li>
+      `;
+    }
+    console.log("Debug display updated:", { inputDays, moneySaved, cigsAvoided, co2Prevented });
+  }
+
+  // Apply button click
+  if (debugApplyBtn) {
+    debugApplyBtn.addEventListener("click", () => {
+      console.log("Apply button clicked");
+      updateDebugDisplay();
+    });
+  }
+
+  // Sample button clicks
+  const sampleButtons = document.querySelectorAll(".debug-sample-btn");
+  console.log("Sample buttons found:", sampleButtons.length);
+  sampleButtons.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const days = e.target.getAttribute("data-days");
+      console.log("Sample button clicked:", days);
+      if (debugInput) {
+        debugInput.value = days;
+        updateDebugDisplay();
+      }
+    });
+  });
+
+  // Allow Enter key to apply
+  if (debugInput) {
+    debugInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        console.log("Enter key pressed");
+        updateDebugDisplay();
+      }
+    });
+
+    // Live update as user types
+    debugInput.addEventListener("input", updateDebugDisplay);
+  }
+
+  // Initialize debug display on page load
+  setTimeout(() => {
+    if (window.userProfileData) {
+      if (debugInput) debugInput.value = 0;
+      updateDebugDisplay();
+      console.log("Debug section initialized");
+    } else {
+      console.log("User profile data not yet loaded");
+    }
+  }, 500);
+
+  // Progress panel elements (floating, bottom-left)
+  const progressToggle = document.getElementById('progress-toggle');
+  const progressPanel = document.getElementById('progress-panel');
+  const progressClose = document.getElementById('progress-close');
+  const panelStreak = document.getElementById('panel-streak');
+  const panelMoney = document.getElementById('panel-money');
+  const panelCigs = document.getElementById('panel-cigs');
+  const panelGoalBar = document.getElementById('panel-goal-bar');
+  const panelGoalText = document.getElementById('panel-goal-text');
+
+  function computeAndShowProgress() {
+    const userData = window.userProfileData || {};
+    const quitDate = userData.quitDate ? new Date(userData.quitDate) : new Date();
+    quitDate.setHours(0,0,0,0);
+    const today = new Date(); today.setHours(0,0,0,0);
+    let daysQuit = Math.floor((today - quitDate) / (1000*60*60*24));
+    daysQuit = Math.max(0, daysQuit);
+    const dailyCost = Math.max(0, userData.costs || 0);
+    const cigsPerDay = Math.max(0, userData.cigs || 0);
+    const totalSaved = daysQuit * dailyCost;
+    const totalCigs = daysQuit * cigsPerDay;
+
+    if (panelStreak) panelStreak.textContent = daysQuit + ' Days';
+    if (panelMoney) panelMoney.textContent = '₱' + totalSaved.toLocaleString();
+    if (panelCigs) panelCigs.textContent = totalCigs;
+
+    const goal = parseInt(localStorage.getItem('userGoal')) || 7000;
+    const progressPct = goal === 0 ? 100 : Math.min(100, Math.round((totalSaved / goal) * 100));
+    if (panelGoalBar) panelGoalBar.style.width = progressPct + '%';
+    if (panelGoalText) panelGoalText.textContent = `₱${totalSaved.toLocaleString()} of ₱${goal.toLocaleString()}`;
+  }
+
+  function openProgressPanel() {
+    if (!progressPanel) return;
+    progressPanel.classList.add('open');
+    progressPanel.setAttribute('aria-hidden','false');
+    if (progressToggle) progressToggle.setAttribute('aria-expanded','true');
+    computeAndShowProgress();
+  }
+
+  function closeProgressPanel() {
+    if (!progressPanel) return;
+    progressPanel.classList.remove('open');
+    progressPanel.setAttribute('aria-hidden','true');
+    if (progressToggle) progressToggle.setAttribute('aria-expanded','false');
+  }
+
+  if (progressToggle) {
+    progressToggle.addEventListener('click', () => {
+      if (progressPanel && progressPanel.classList.contains('open')) closeProgressPanel(); else openProgressPanel();
+    });
+  }
+  if (progressClose) progressClose.addEventListener('click', closeProgressPanel);
+
+  // Close when clicking outside
+  document.addEventListener('click', (ev) => {
+    const t = ev.target;
+    if (!progressPanel || !progressToggle) return;
+    if (progressPanel.classList.contains('open') && !progressPanel.contains(t) && !progressToggle.contains(t)) {
+      closeProgressPanel();
+    }
+  });
+
+  // Recompute when profile data becomes available
+  window.addEventListener('userProfileDataUpdated', computeAndShowProgress);
 
   const links = document.querySelectorAll(".nav-links a");
   const sections = document.querySelectorAll(".content-section");

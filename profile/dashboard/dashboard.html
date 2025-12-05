@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Breathe Green - Dashboard</title>
@@ -52,6 +53,55 @@
     </section>
 
     <section id="help" class="content-section">
+      <!-- DEBUG: Days Editor Section -->
+      <div class="debug-section">
+        <div class="debug-card">
+          <h2>🔧 Debug: Edit Days Quit</h2>
+          <p>Test and verify calculations:</p>
+          <div class="debug-input-group">
+            <label for="debug-days-input">Days Quit:</label>
+            <input type="number" id="debug-days-input" min="0" step="1" placeholder="Enter days" />
+            <button id="debug-apply-btn" class="debug-btn">Apply</button>
+          </div>
+
+          <div class="debug-samples">
+            <p>Quick Test Samples:</p>
+            <div class="debug-sample-buttons">
+              <button class="debug-sample-btn" data-days="1">1 Day</button>
+              <button class="debug-sample-btn" data-days="7">1 Week</button>
+              <button class="debug-sample-btn" data-days="30">1 Month</button>
+              <button class="debug-sample-btn" data-days="90">3 Months</button>
+              <button class="debug-sample-btn" data-days="180">6 Months</button>
+              <button class="debug-sample-btn" data-days="365">1 Year</button>
+            </div>
+          </div>
+          
+          <div class="debug-results">
+            <div class="debug-result-item">
+              <span class="debug-label">Money Saved (₱):</span>
+              <span class="debug-value" id="debug-money">₱0</span>
+            </div>
+            <div class="debug-result-item">
+              <span class="debug-label">Cigarettes Avoided:</span>
+              <span class="debug-value" id="debug-cigs">0</span>
+            </div>
+            <div class="debug-result-item">
+              <span class="debug-label">Day Streak:</span>
+              <span class="debug-value" id="debug-streak">0 Days</span>
+            </div>
+            <div class="debug-result-item">
+              <span class="debug-label">CO₂ Prevented (kg):</span>
+              <span class="debug-value" id="debug-co2">0 kg</span>
+            </div>
+          </div>
+
+          <div class="debug-info">
+            <p><strong>Profile Data Used:</strong></p>
+            <ul id="debug-profile-info"></ul>
+          </div>
+        </div>
+      </div>
+
       <div class="help-grid">
         <div class="card help-card" id="breathing-card">
           <h3>4-2-4 BREATHING TECHNIQUE</h3>
@@ -263,8 +313,55 @@
     </div>
   </div>
 
+  <!-- Progress toggle (floating, bottom-left) -->
+  <button id="progress-toggle" class="progress-toggle" aria-expanded="false" aria-controls="progress-panel">Progress</button>
+
+  <aside id="progress-panel" class="progress-panel" aria-hidden="true" role="region" aria-label="Progress panel">
+    <div class="progress-header">
+      <h4>Your Progress</h4>
+      <button id="progress-close" class="progress-close" aria-label="Close progress panel">×</button>
+    </div>
+    <div class="progress-body">
+      <div class="progress-item"><span>Days Streak:</span><strong id="panel-streak">0 Days</strong></div>
+      <div class="progress-item"><span>Money Saved:</span><strong id="panel-money">₱0</strong></div>
+      <div class="progress-item"><span>Cigarettes Avoided:</span><strong id="panel-cigs">0</strong></div>
+      <div class="progress-bar-outer"><div id="panel-goal-bar" class="progress-bar-inner" style="width:0%"></div></div>
+      <div class="progress-item"><small id="panel-goal-text">₱0 of ₱7,000</small></div>
+    </div>
+  </aside>
+
   <script type="module" src="dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="stories.js"></script>
+
+<div id="logout-screen">
+  <div class="breathe-logo">
+    <span>Breathe</span>
+    <strong>Green</strong>
+  </div>
+
+  <div class="bubbles">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <p class="loading-text">Logging you out...</p>
+</div>
+
+</div>
+
+<script>
+const logoutBtn = document.getElementById('logout-btn');
+const logoutScreen = document.getElementById('logout-screen');
+
+logoutBtn.addEventListener('click', () => {
+  logoutScreen.style.display = 'flex';
+  setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+});
+</script>
+
 </body>
 </html>

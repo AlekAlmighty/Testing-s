@@ -1,13 +1,111 @@
+*,
+*::before,
+*::after {
+  font-family: "Baloo 2", sans-serif !important;
+}
+
 :root {
-  --panel-green: #2ecc71;
-  --panel-green-dark: #27ae60;
+  --main-green: #00cd63;
   --bg-light: #f6f5f7;
   --transition-speed: 0.7s;
 }
 
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+.breathe-logo {
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.breathe-logo span,
+.breathe-logo strong {
+  color: var(--main-green);
+}
+
+.bubbles {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.bubbles span {
+  position: absolute;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  background: rgba(0, 205, 99, 0.3);
+  border-radius: 50%;
+  animation: bubble 2.5s infinite ease-in-out;
+}
+
+.bubbles span:nth-child(1) { left: 10px; animation-delay: 0s; }
+.bubbles span:nth-child(2) { left: 40px; animation-delay: .3s; }
+.bubbles span:nth-child(3) { left: 70px; animation-delay: .6s; }
+.bubbles span:nth-child(4) { left: 100px; animation-delay: .9s; }
+.bubbles span:nth-child(5) { left: 130px; animation-delay: 1.2s; }
+
+@keyframes bubble {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-130px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.loading-text {
+  margin-top: 25px;
+  font-size: 16px;
+  color: var(--main-green);
+  font-weight: 500;
+  letter-spacing: 1px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ddd;
+  border-top: 6px solid var(--main-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  font-family: "Baloo 2", sans-serif;
+  background: #fff;
   background-repeat: repeat;
   background-size: 200px 200px;
   display: flex;
@@ -75,14 +173,14 @@ form select {
 
 form input:focus,
 form select:focus {
-  border-color: var(--panel-green);
+  border-color: var(--main-green);
   outline: none;
-  box-shadow: 0 0 6px rgba(46, 204, 113, 0.4);
+  box-shadow: 0 0 6px rgba(0, 205, 99, 0.4);
 }
 
 form select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg fill='%232ecc71' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg fill='%2300cd63' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 16px;
@@ -91,7 +189,7 @@ form select {
 
 form button {
   padding: 12px;
-  background: linear-gradient(135deg, var(--panel-green), var(--panel-green-dark));
+  background: var(--main-green);
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -103,7 +201,7 @@ form button {
 
 form button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+  box-shadow: 0 6px 15px rgba(0, 205, 99, 0.4);
 }
 
 form p {
@@ -112,14 +210,14 @@ form p {
 }
 
 form a {
-  color: var(--panel-green);
+  color: var(--main-green);
   font-weight: bold;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 form a:hover {
-  color: var(--panel-green-dark);
+  color: var(--main-green);
 }
 
 .login-container {
@@ -148,7 +246,7 @@ form a:hover {
   left: 50%;
   width: 50%;
   height: 100%;
-  background: var(--panel-green);
+  background: var(--main-green);
   color: #fff;
   display: flex;
   justify-content: center;
@@ -224,4 +322,170 @@ form a:hover {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);
+}
+
+/* ===== MOBILE RESPONSIVE DESIGN ===== */
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 10px;
+  }
+
+  .container {
+    width: 100%;
+    min-height: 600px;
+    flex-direction: column;
+  }
+
+  .form-container {
+    width: 100%;
+    order: 1;
+  }
+
+  form {
+    padding: 20px 20px;
+    max-width: 100%;
+  }
+
+  form h1 {
+    font-size: 22px;
+  }
+
+  form input,
+  form select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  form button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .cover-panel {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    order: 2;
+    transform: none !important;
+  }
+
+  .container.active .cover-panel {
+    transform: none !important;
+  }
+
+  .cover-content {
+    padding: 20px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cover-content h1 {
+    font-size: 22px;
+    margin-bottom: 5px;
+  }
+
+  .cover-content p {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .panel-content {
+    font-size: 13px;
+  }
+}
+
+/* Mobile phones (480px and below) */
+@media (max-width: 480px) {
+  body {
+    height: auto;
+    min-height: 100vh;
+    padding: 8px;
+  }
+
+  .container {
+    width: 100%;
+    min-height: auto;
+    flex-direction: column;
+    border-radius: 10px;
+  }
+
+  .form-container {
+    width: 100%;
+    padding: 0;
+  }
+
+  form {
+    padding: 15px 15px;
+    gap: 10px;
+  }
+
+  form h1 {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  form input,
+  form select {
+    padding: 10px 8px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+
+  form button {
+    padding: 10px 8px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+
+  form p {
+    font-size: 12px;
+  }
+
+  form a {
+    font-size: 12px;
+  }
+
+  .login-container,
+  .register-container {
+    opacity: 1;
+  }
+
+  .cover-panel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    order: 2;
+    transform: none !important;
+  }
+
+  .container.active .cover-panel {
+    transform: none !important;
+  }
+
+  .cover-content {
+    padding: 15px;
+    opacity: 1;
+    pointer-events: auto;
+    min-height: 100%;
+  }
+
+  .cover-content h1 {
+    font-size: 18px;
+    margin-bottom: 3px;
+  }
+
+  .cover-content p {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .panel-content {
+    font-size: 12px;
+    line-height: 1.4;
+  }
 }
