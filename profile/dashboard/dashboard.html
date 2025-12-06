@@ -21,6 +21,7 @@
         <a href="#" data-target="money">Money Saved</a>
         <a href="#" data-target="milestones">Milestones</a>
         <a href="#" data-target="environment">Environment</a>
+        <a href="badges.html" data-target="badges">Badges</a>
         <a href="#" id="stories-link" data-target="stories">Stories</a>
         <button id="logout-btn" class="logout-btn">Logout</button>
       </nav>
@@ -262,6 +263,8 @@
       </div>
     </section>
 
+    <!-- Badges moved to standalone badges.html -->
+
     <section id="stories" class="content-section" style="display:none;">
       <main class="stories-main">
         <section class="create-post">
@@ -359,7 +362,7 @@ const logoutScreen = document.getElementById('logout-screen');
 
 logoutBtn.addEventListener('click', () => {
   logoutScreen.style.display = 'flex';
-  setTimeout(() => { window.location.href = '../../index.html'; }, 1500);
+  setTimeout(() => { window.location.href = 'login.html'; }, 1500);
 });
 </script>
 

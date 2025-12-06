@@ -122,28 +122,5 @@
     });
   </script>
 
-  <!-- AI Assessment Modal (shown on first login only) -->
-  <div id="ai-assessment-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:100000;">
-    <div style="background:#fff; padding:20px; max-width:520px; width:94%; border-radius:8px; box-shadow:0 6px 24px rgba(0,0,0,0.2);">
-      <h2 style="margin-top:0;">Quick Health Assessment</h2>
-      <p>This short assessment helps us personalise feedback for your smoking history.</p>
-      <form id="aiAssessmentForm">
-        <label>Do you currently smoke? <select name="currentSmoker" required><option value="yes">Yes</option><option value="no">No</option></select></label>
-        <br><br>
-        <label>Years smoked (0 if never): <input type="number" name="years" min="0" value="0" required></label>
-        <br><br>
-        <label>Cigarettes per day: <input type="number" name="cigsPerDay" min="0" value="0" required></label>
-        <br><br>
-        <label>Motivation to quit: <select name="motivation" required><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
-        <br><br>
-        <div style="display:flex; gap:8px; justify-content:flex-end;">
-          <button type="button" id="aiAssessmentCancel">Skip</button>
-          <button type="submit" id="aiAssessmentSubmit">Get feedback</button>
-        </div>
-      </form>
-      <div id="aiAssessmentResult" style="margin-top:12px; display:none;"></div>
-    </div>
-  </div>
-
 </body>
 </html>

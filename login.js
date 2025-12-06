@@ -85,20 +85,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (userDoc.exists()) {
         // Store user data in sessionStorage for use in dashboard
-        const ud = userDoc.data();
-        sessionStorage.setItem('userData', JSON.stringify(ud));
-
-        // If this user hasn't been assessed yet, run the AI assessment flow (first-login only)
-        if (!ud.assessed) {
-          try {
-            await runFirstLoginAssessment(user.uid, ud);
-            // refresh sessionStorage with the updated doc if possible
-            const refreshed = await getDoc(doc(db, 'users', user.uid));
-            if (refreshed.exists()) sessionStorage.setItem('userData', JSON.stringify(refreshed.data()));
-          } catch (assessErr) {
-            console.warn('Assessment flow failed or was skipped:', assessErr);
-          }
-        }
+        sessionStorage.setItem('userData', JSON.stringify(userDoc.data()));
       }
     } catch (getErr) {
       console.warn('Failed to read user document:', getErr);
@@ -187,8 +174,7 @@ document.querySelector('.register-container form').addEventListener('submit', as
       gender,
       createdAt: new Date().toISOString(),
       lastUpdated: new Date().toISOString(),
-      emailVerified: false,
-      assessed: false
+      emailVerified: false
     };
 
     // Create a document in the 'users' collection with the user's UID as the document ID
@@ -262,132 +248,4 @@ document.querySelector('.register-container form').addEventListener('submit', as
     errorDiv.style.display = 'block';
     errorDiv.style.color = 'red';
   }
-  }
-
-
-  // --- First-login AI assessment helpers ---
-  async function runFirstLoginAssessment(uid, existingData) {
-    try {
-      const assessment = await showAssessmentModalPromise(existingData);
-      // if user skipped assessment, assessment may be null — still mark assessed to avoid repeated prompts
-      const finalAssessment = assessment || { skipped: true, feedback: 'User skipped assessment' };
-      await setDoc(doc(db, 'users', uid), { assessed: true, assessment: finalAssessment, lastAssessed: new Date().toISOString() }, { merge: true });
-    } catch (err) {
-      console.warn('runFirstLoginAssessment error:', err);
-      // Do not block login on assessment errors
-      throw err;
-    }
-  }
-
-  function showAssessmentModalPromise(existingData) {
-    return new Promise((resolve, reject) => {
-      try {
-        const modal = document.getElementById('ai-assessment-modal');
-        const form = document.getElementById('aiAssessmentForm');
-        const resultDiv = document.getElementById('aiAssessmentResult');
-        const cancelBtn = document.getElementById('aiAssessmentCancel');
-        const submitBtn = document.getElementById('aiAssessmentSubmit');
-
-        if (!modal || !form) return resolve(null);
-
-        modal.style.display = 'flex';
-        resultDiv.style.display = 'none';
-
-        const onCancel = () => {
-          cleanup();
-          resolve(null);
-        };
-
-        const onSubmit = async (e) => {
-          e.preventDefault();
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Assessing...';
-
-          const formData = new FormData(form);
-          const payload = {
-            currentSmoker: formData.get('currentSmoker'),
-            years: parseInt(formData.get('years') || '0', 10),
-            cigsPerDay: parseInt(formData.get('cigsPerDay') || '0', 10),
-            motivation: formData.get('motivation') || 'medium',
-            age: existingData && existingData.age ? existingData.age : null,
-            gender: existingData && existingData.gender ? existingData.gender : null
-          };
-
-          try {
-            let assessment = null;
-            try {
-              assessment = await attemptAIAssessment(payload);
-            } catch (aiErr) {
-              console.warn('AI endpoint failed, falling back to local heuristic:', aiErr);
-              assessment = localAssessment(payload);
-            }
-
-            // Show result in modal briefly
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<strong>Feedback:</strong><div style="margin-top:6px;">' + (assessment.feedback || JSON.stringify(assessment)) + '</div>';
-
-            // cleanup and resolve with assessment object
-            setTimeout(() => {
-              cleanup();
-              resolve(assessment);
-            }, 900);
-          } catch (err) {
-            cleanup();
-            reject(err);
-          }
-        };
-
-        function cleanup() {
-          modal.style.display = 'none';
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Get feedback';
-          form.removeEventListener('submit', onSubmit);
-          cancelBtn.removeEventListener('click', onCancel);
-        }
-
-        form.addEventListener('submit', onSubmit);
-        cancelBtn.addEventListener('click', onCancel);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
-
-  async function attemptAIAssessment(payload) {
-    // This expects a backend endpoint that calls your AI provider (OpenAI or others).
-    // Example endpoint path: '/api/ai/assess' — implement server-side to keep keys secret.
-    const endpoint = '/api/ai/assess';
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('AI endpoint error: ' + res.statusText);
-    const data = await res.json();
-    // Expected response shape: { feedback: string, score?: number, recommendations?: string[] }
-    return data;
-  }
-
-  function localAssessment(payload) {
-    // Simple heuristic fallback if no server-side AI is available.
-    const years = Number(payload.years || 0);
-    const cigs = Number(payload.cigsPerDay || 0);
-    let score = 0;
-    if (payload.currentSmoker === 'yes') score += 50;
-    score += Math.min(30, Math.floor(years * 2));
-    score += Math.min(20, Math.floor(cigs / 2));
-
-    let risk = 'Low';
-    if (score >= 80) risk = 'High';
-    else if (score >= 50) risk = 'Moderate';
-
-    const feedback = `Estimated risk level: ${risk}. Years smoked: ${years}, cigarettes/day: ${cigs}. Recommendation: ` +
-      (risk === 'High' ? 'Seek medical advice and consider an intensive quit plan; try counselling + pharmacotherapy.' :
-       risk === 'Moderate' ? 'Consider quitting supports (apps, counselling). Increase motivation and plan steps.' :
-       'Maintain healthy habits; avoid relapse and consider brief cessation support if concerned.');
-
-    return { score, feedback, recommendations: [] };
-  }
-
-  // --- end helpers ---
 });

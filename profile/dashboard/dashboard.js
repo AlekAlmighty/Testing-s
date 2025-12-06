@@ -20,7 +20,7 @@ const db = getFirestore(app);
 // Check auth state and fetch user profile data
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = '../../index.html';
+    window.location.href = '../../login.html';
     return;
   }
 
@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) logoutBtn.addEventListener('click', () => window.location.href = '../../index.html');
+  if (logoutBtn) logoutBtn.addEventListener('click', () => window.location.href = '../../login.html');
 
   const playMiniBtn = document.getElementById("play-mini-games");
   const gameOverlay = document.getElementById("game-overlay");
