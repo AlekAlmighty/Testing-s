@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Breathe Green - Stories</title>
+  <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="stories.css">
 </head>
 <body>
-  <header class="stories-header">
+  <header class="dashboard-header">
     <div class="header-container">
-      <div class="logo"><a href="dashboard.html">Breathe Green</a></div>
+      <div class="logo">Breathe Green</div>
       <nav class="nav-links">
-        <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html">Home</a>
+        <a href="dashboard.html#help">Help</a>
+        <a href="dashboard.html#money">Money Saved</a>
+        <a href="dashboard.html#milestones">Milestones</a>
+        <a href="dashboard.html#environment">Environment</a>
+        <a href="badges.html">Badges</a>
         <a href="stories.html" class="active">Stories</a>
+        <button id="logout-btn" class="logout-btn">Logout</button>
       </nav>
     </div>
   </header>
@@ -26,12 +34,10 @@
             <label for="image-input">Choose image (optional)</label>
             <input type="file" id="image-input" accept="image/*">
           </div>
-
           <div class="desc-input-wrap">
             <label for="desc-input">Description</label>
             <textarea id="desc-input" rows="4" placeholder="Write about your journey..."></textarea>
           </div>
-
           <div class="submit-wrap">
             <div class="spacer"></div>
             <button type="submit" id="post-btn">Post Story</button>
@@ -47,10 +53,10 @@
         <article class="post">
           <div class="meta">
             <div class="author">Rhea</div>
-            <div class="time small-muted">Invalid Date</div>
+            <div class="time small-muted">2 days ago</div>
           </div>
           <div class="image-wrapper">
-            <img src="../dashboard/breathing.jpg" alt="calendar" />
+            <img src="breathing.jpg" alt="calendar" onerror="this.style.display='none'" />
           </div>
           <div class="content">
             <div class="desc">Lost my streak once but got back up. That reset didn't mean failure, it meant I learned what triggers me.</div>
@@ -70,10 +76,10 @@
         <article class="post">
           <div class="meta">
             <div class="author">Miguel</div>
-            <div class="time small-muted">Invalid Date</div>
+            <div class="time small-muted">5 days ago</div>
           </div>
           <div class="image-wrapper">
-            <img src="../dashboard/money.png" alt="jar" />
+            <img src="money.png" alt="jar" onerror="this.style.display='none'" />
           </div>
           <div class="content">
             <div class="desc">I used a jar to track money saved and it really motivates me. First week was hard but the cravings passed quicker each day.</div>
@@ -91,10 +97,64 @@
           </div>
         </article>
 
-        <!-- Additional sample posts can go here -->
+        <article class="post">
+          <div class="meta">
+            <div class="author">Sarah</div>
+            <div class="time small-muted">1 week ago</div>
+          </div>
+          <div class="content">
+            <div class="desc">30 days smoke-free today! The breathing exercises really help when cravings hit. Keep going everyone! 💪</div>
+          </div>
+          <div class="reactions">
+            <div class="reaction-row">
+              <div class="reaction-count"><span class="reaction-emoji">👍</span> <span>5</span></div>
+              <div class="reaction-count"><span class="reaction-emoji">👎</span> <span>0</span></div>
+            </div>
+            <div class="comment-box">
+              <input placeholder="Write a comment" />
+              <button>Comment</button>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
   </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACafoJ0E-rJGv0Qz0F5C879ggI8CRSQ3A",
+      authDomain: "breathe-green-7cc38.firebaseapp.com",
+      projectId: "breathe-green-7cc38",
+      storageBucket: "breathe-green-7cc38.firebasestorage.app",
+      messagingSenderId: "219050855571",
+      appId: "1:219050855571:web:5a418b7b9982baa806d166",
+      measurementId: "G-4CZ35QJLJ1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Check authentication
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Logout handler
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (err) {
+        console.error('Logout failed:', err);
+        alert('Failed to logout. Please try again.');
+      }
+    });
+  </script>
 
   <script src="stories.js"></script>
 </body>
