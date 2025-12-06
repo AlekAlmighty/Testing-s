@@ -37,13 +37,13 @@
     <div class="header-container">
       <div class="logo">Breathe Green</div>
       <nav class="nav-links">
-        <a href="dashboard.html">Home</a>
-        <a href="help.html">Help</a>
-        <a href="money.html">Money Saved</a>
-        <a href="milestones.html">Milestones</a>
-        <a href="environment.html">Environment</a>
-        <a href="badges.html" class="active">Badges</a>
-        <a href="stories.html">Stories</a>
+        <a href="#" class="active" data-target="home">Home</a>
+        <a href="#" data-target="help">Help</a>
+        <a href="#" data-target="money">Money Saved</a>
+        <a href="#" data-target="milestones">Milestones</a>
+        <a href="#" data-target="environment">Environment</a>
+        <a href="badges.html" data-target="badges">Badges</a
+        <a href="#" id="stories-link" data-target="stories">Stories</a>
         <button id="logout-btn" class="logout-btn">Logout</button>
       </nav>
     </div>
@@ -68,10 +68,10 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
 
-    // Firebase config
+    // Firebase config (same as dashboard)
     const firebaseConfig = {
       apiKey: "AIzaSyACafoJ0E-rJGv0Qz0F5C879ggI8CRSQ3A",
       authDomain: "breathe-green-7cc38.firebaseapp.com",
@@ -86,22 +86,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Logout handler
-    document.getElementById('logout-btn').addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        window.location.href = '../../login.html';
-      } catch (err) {
-        console.error('Logout failed:', err);
-      }
-    });
-
     const thresholds = [5,10,15,30,60,90,180,365];
     const badgesMeta = thresholds.map((d,i)=>({
       id: 'badge-'+d,
       days: d,
       title: `${d} Days Smoke-Free`,
       desc: i===0? 'First milestone — excellent start!' : `Reached ${d} days smoke-free!`,
+      // simple SVG icons (green-themed) — can be replaced with custom SVGs
       svg: [
         `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#e9f9ee"/><path d="M8 12l2 2 4-4" stroke="#27ae60" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
         `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="18" height="18" rx="6" fill="#e9f9ee"/><path d="M7 12c2-3 4-5 8-5" stroke="#27ae60" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
@@ -138,17 +129,21 @@
     }
 
     function computeLevelFromClaims() {
+      // Level is equal to the number of claimed badges (0 if none)
       const claimed = Array.isArray(window.claimedBadges) ? window.claimedBadges.length : 0;
       return claimed;
     }
 
     function updateUI(days) {
+      // Keep a global currentDays so claim handler can re-render
       window.currentDays = Number(days) || 0;
       daysCountEl.textContent = window.currentDays;
 
+      // Level is number of claimed badges
       const lvl = computeLevelFromClaims();
       levelEl.textContent = lvl;
 
+      // Progress shows number of claimed badges / total badges
       const claimedCount = lvl;
       const pct = Math.min(100, Math.round((claimedCount / badgesMeta.length) * 100));
       levelBar.style.width = pct + '%';
@@ -158,10 +153,12 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
+        // if not logged in, redirect to login
         window.location.href = '../../login.html';
         return;
       }
 
+      // store current user for claim actions
       window.currentUser = user;
 
       try {
@@ -182,12 +179,14 @@
         updateUI(days);
       } catch (err) {
         console.warn('Failed to load user profile for badges', err);
+        // fallback: try localStorage-based days (for debug)
         const fallback = parseInt(localStorage.getItem('debugDays') || '0', 10) || 0;
         window.claimedBadges = JSON.parse(localStorage.getItem('claimedBadges') || '[]');
         updateUI(fallback);
       }
     });
 
+    // Optional: animate badges when they become earned via MutationObserver
     const obs = new MutationObserver((list) => {
       for (const m of list) {
         for (const node of m.addedNodes) {
@@ -203,6 +202,7 @@
     });
     obs.observe(grid, { childList:true, subtree:true });
 
+    // Click handler for claim buttons
     document.addEventListener('click', async (ev) => {
       const btn = ev.target.closest('.claim-btn');
       if (!btn) return;
@@ -211,17 +211,21 @@
       btn.disabled = true;
       btn.textContent = 'Claiming...';
 
+      // optimistic UI update
       const markClaimedLocally = () => {
         window.claimedBadges = Array.from(new Set([...(window.claimedBadges||[]), days]));
         localStorage.setItem('claimedBadges', JSON.stringify(window.claimedBadges));
+        // Re-render whole UI using current days so level updates correctly
         updateUI(window.currentDays || 0);
       };
 
       try {
         if (window.currentUser) {
+          // persist to Firestore
           await updateDoc(doc(db, 'users', window.currentUser.uid), { badgesClaimed: arrayUnion(days) });
           markClaimedLocally();
         } else {
+          // no authenticated user — fallback to localStorage
           markClaimedLocally();
         }
       } catch (err) {
