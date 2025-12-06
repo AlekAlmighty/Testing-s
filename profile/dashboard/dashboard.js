@@ -252,6 +252,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       link.classList.add("active");
       const target = link.dataset.target;
+      // If the nav item points to the standalone badges page, navigate there
+      if (target === 'badges') {
+        // open badges.html (preserve same directory structure)
+        window.location.href = 'badges.html';
+        return;
+      }
       if (target === "stories") {
         const storiesSection = document.getElementById("stories");
         if (!storiesSection) return;
