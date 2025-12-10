@@ -2907,3 +2907,112 @@ color: var(--main-green);
   .progress-toggle { left: 14px; right: auto; bottom: 14px; }
 }
 
+/* Main wrapper */
+#print-area {
+    max-width: 850px;
+    margin: auto;
+    padding: 25px;
+    font-family: "Poppins", sans-serif;
+    background: #fff;
+}
+
+/* Title */
+.report-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 25px;
+}
+
+/* Top stats grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+/* Stat cards */
+.stat-card {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+}
+
+#print-area {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 760px;
+}
+
+#print-pdf-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 140px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#00ff66,#00cc52);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 1000;
+}
+
+#print-pdf-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+#print-pdf-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+}
+
+.report-card {
+    margin-top: 25px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.report-card h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #222;
+}
+
+canvas {
+    width: 100% !important;
+    max-height: 300px;
+}
