@@ -316,7 +316,12 @@
     </div>
   </div>
 
-  <!-- Progress toggle (floating, bottom-left) -->
+  <button id="print-pdf-btn" title="Download PDF">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M5 20h14v-2H5v2zm7-18L5.33 9h3.34v4h6.66V9h3.34L12 2z"/>
+    </svg>
+  </button>
+
   <button id="progress-toggle" class="progress-toggle" aria-expanded="false" aria-controls="progress-panel">Progress</button>
 
   <aside id="progress-panel" class="progress-panel" aria-hidden="true" role="region" aria-label="Progress panel">
@@ -363,6 +368,130 @@ const logoutScreen = document.getElementById('logout-screen');
 logoutBtn.addEventListener('click', () => {
   logoutScreen.style.display = 'flex';
   setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<div id="print-area">
+    <h1 class="report-title">Your Smoking Cessation Analytics</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Money Saved</h3>
+            <p class="stat-value" id="moneySaved">₱1,540</p>
+            <span class="stat-label">₱ saved by not buying cigarettes</span>
+        </div>
+        <div class="stat-card">
+            <h3>Cigarettes Not Smoked</h3>
+            <p class="stat-value" id="cigsNotSmoked">84</p>
+            <span class="stat-label">Sticks avoided</span>
+        </div>
+        <div class="stat-card">
+            <h3>Days Streak</h3>
+            <p class="stat-value" id="daysStreak">12 days</p>
+            <span class="stat-label">Your current quit streak</span>
+        </div>
+        <div class="stat-card">
+            <h3>CO₂ Prevented</h3>
+            <p class="stat-value" id="co2Prevented">2.4 kg</p>
+            <span class="stat-label">Reduced carbon footprint</span>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <h2>Daily Progress</h2>
+        <canvas id="progressChartPDF" width="760" height="300"></canvas>
+    </div>
+
+    <div class="report-card">
+        <h2>Weekly Savings Breakdown</h2>
+        <canvas id="savingsChartPDF" width="760" height="300"></canvas>
+    </div>
+</div>
+
+<script>
+const progressChartPDF = new Chart(document.getElementById('progressChartPDF'), {
+    type: 'line',
+    data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [{
+            label: 'Cigarettes Not Smoked',
+            data: [4,6,7,9,12,15,20],
+            borderWidth: 2,
+            borderColor: '#000000',
+            backgroundColor: 'rgba(0,0,0,0.1)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: false,
+        animation: false,
+        plugins: { legend: { display: true, labels: { color: '#000000' } } },
+        scales: {
+            x: { ticks: { color: '#000000' } },
+            y: { ticks: { color: '#000000' } }
+        }
+    }
+});
+
+const savingsChartPDF = new Chart(document.getElementById('savingsChartPDF'), {
+    type: 'bar',
+    data: {
+        labels: ['Week 1','Week 2','Week 3','Week 4'],
+        datasets: [{
+            label: 'Money Saved (₱)',
+            data: [520,380,460,680],
+            borderWidth: 1,
+            backgroundColor: '#000000'
+        }]
+    },
+    options: {
+        responsive: false,
+        animation: false,
+        plugins: { legend: { display: true, labels: { color: '#000000' } } },
+        scales: {
+            x: { ticks: { color: '#000000' } },
+            y: { ticks: { color: '#000000' }, beginAtZero: true }
+        }
+    }
+});
+
+
+document.getElementById("print-pdf-btn").addEventListener("click", async () => {
+    const area = document.getElementById("print-area");
+    area.style.display = "block";
+    area.style.filter = "grayscale(100%)";
+
+    const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
+
+    area.style.display = "none";
+    area.style.filter = "";
+
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const pdf = new jspdf.jsPDF("p", "mm", "a4");
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 10;
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const scaleX = (pageWidth - 2 * margin) / imgProps.width;
+    const scaleY = (pageHeight - 2 * margin) / imgProps.height;
+    const scale = Math.min(scaleX, scaleY);
+
+    const pdfWidth = imgProps.width * scale;
+    const pdfHeight = imgProps.height * scale;
+
+    const x = (pageWidth - pdfWidth) / 2;
+    const y = (pageHeight - pdfHeight) / 2;
+
+    pdf.addImage(imgData, "JPEG", x, y, pdfWidth, pdfHeight);
+
+    pdf.save("quit-smoking-analytics.pdf");
 });
 </script>
 
