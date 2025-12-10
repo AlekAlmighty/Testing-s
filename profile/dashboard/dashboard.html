@@ -468,14 +468,6 @@ logoutBtn.addEventListener('click', () => {
             </p>
         </div>
 
-        <hr class="pdf-divider">
-
-        <!-- FOOTER -->
-        <div class="pdf-footer">
-            <p class="footer-text">Breathe Green © 2025 • Smoking Cessation Report</p>
-            <p class="page-number"></p>
-        </div>
-
     </div>
 
 </div>
@@ -551,47 +543,54 @@ const savingsChartPDF = new Chart(document.getElementById('savingsChartPDF'), {
 
 document.getElementById("print-pdf-btn").addEventListener("click", async () => {
     const area = document.getElementById("print-area");
-    const includeCharts = document.getElementById("includeTables").checked; // <- fixed ID
-
+    const includeTables = document.getElementById("includeTables").checked;
     const chartsContainer = document.getElementById("charts-container");
-    chartsContainer.style.display = includeCharts ? "block" : "none";
+    chartsContainer.style.display = includeTables ? "block" : "none";
 
     area.style.display = "block";
-    area.style.filter = "grayscale(100%)";
+    await new Promise(r => setTimeout(r, 200)); // ensure rendering
 
-    // Give the browser a moment to render
-    await new Promise(r => setTimeout(r, 100));
-
+    // Capture full area as a single canvas
     const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
-
-    area.style.display = "none";
-    chartsContainer.style.display = "block"; // restore
-
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
-    const pdf = new jspdf.jsPDF("p", "mm", "a4");
 
+    const pdf = new jspdf.jsPDF("p", "mm", "a4");
     const pageWidth = 210;
     const pageHeight = 297;
     const margin = 10;
 
     const imgProps = pdf.getImageProperties(imgData);
-    const scaleX = (pageWidth - 2 * margin) / imgProps.width;
-    const scaleY = (pageHeight - 2 * margin) / imgProps.height;
-    const scale = Math.min(scaleX, scaleY);
 
-    const pdfWidth = imgProps.width * scale;
-    const pdfHeight = imgProps.height * scale;
+    // Calculate scale to fit the page
+    const pdfWidth = pageWidth - 2 * margin;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    const x = (pageWidth - pdfWidth) / 2;
-    const y = (pageHeight - pdfHeight) / 2;
+    // If content is taller than page, scale to fit height
+    let finalHeight = pdfHeight;
+    let finalWidth = pdfWidth;
+    if (pdfHeight > pageHeight - 2 * margin) {
+        const scaleFactor = (pageHeight - 2 * margin) / pdfHeight;
+        finalHeight = pdfHeight * scaleFactor;
+        finalWidth = pdfWidth * scaleFactor;
+    }
 
-    pdf.addImage(imgData, "JPEG", x, y, pdfWidth, pdfHeight);
+    // Add the image to the PDF
+    pdf.addImage(imgData, "JPEG", margin, margin, finalWidth, finalHeight);
 
-    addPageNumbers(pdf);
+    // Add footer
+    const lineY = pageHeight - 14;
+    pdf.setDrawColor(0);
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, lineY, pageWidth - margin, lineY);
+    pdf.setFontSize(10);
+    pdf.text(`Breathe Green © 2025 • Smoking Cessation Report`, pageWidth / 2, pageHeight - 10, { align: "center" });
+    pdf.text(`Page 1`, pageWidth / 2, pageHeight - 4, { align: "center" });
+
+    area.style.display = "none";
+    chartsContainer.style.display = "block"; // restore
 
     pdf.save("quit-smoking-analytics.pdf");
 });
-
 
 </script>
 
