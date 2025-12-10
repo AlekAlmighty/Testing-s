@@ -408,33 +408,41 @@ logoutBtn.addEventListener('click', () => {
         </p>
 
         <!-- ANALYTICS GRID -->
-        <div class="pro-stats-grid">
+      <table class="pro-stats-table">
+          <thead>
+              <tr>
+                  <th>Category</th>
+                  <th>Value</th>
+                  <th>Description</th>
+              </tr>
+          </thead>
 
-            <div class="pro-stat-box">
-                <h3>Money Saved</h3>
-                <p class="pro-stat-value" id="moneySaved">₱1,540</p>
-                <p class="pro-stat-desc">Total amount saved from avoided cigarette purchases</p>
-            </div>
+          <tbody>
+              <tr>
+                  <td>Money Saved</td>
+                  <td id="moneySaved">₱1,540</td>
+                  <td>Total amount saved from avoided cigarette purchases</td>
+              </tr>
 
-            <div class="pro-stat-box">
-                <h3>Cigarettes Not Smoked</h3>
-                <p class="pro-stat-value" id="cigsNotSmoked">84</p>
-                <p class="pro-stat-desc">Total sticks prevented</p>
-            </div>
+              <tr>
+                  <td>Cigarettes Not Smoked</td>
+                  <td id="cigsNotSmoked">84</td>
+                  <td>Total sticks prevented</td>
+              </tr>
 
-            <div class="pro-stat-box">
-                <h3>Days Streak</h3>
-                <p class="pro-stat-value" id="daysStreak">12 days</p>
-                <p class="pro-stat-desc">Duration of your smoke-free streak</p>
-            </div>
+              <tr>
+                  <td>Days Streak</td>
+                  <td id="daysStreak">12 days</td>
+                  <td>Duration of your smoke-free streak</td>
+              </tr>
 
-            <div class="pro-stat-box">
-                <h3>CO₂ Prevented</h3>
-                <p class="pro-stat-value" id="co2Prevented">2.4 kg</p>
-                <p class="pro-stat-desc">Estimated environmental reduction</p>
-            </div>
-
-        </div>
+              <tr>
+                  <td>CO₂ Prevented</td>
+                  <td id="co2Prevented">2.4 kg</td>
+                  <td>Estimated environmental reduction</td>
+              </tr>
+          </tbody>
+      </table>
 
         <!-- CHARTS -->
 <!-- Inside #print-area -->
@@ -578,6 +586,8 @@ document.getElementById("print-pdf-btn").addEventListener("click", async () => {
     const y = (pageHeight - pdfHeight) / 2;
 
     pdf.addImage(imgData, "JPEG", x, y, pdfWidth, pdfHeight);
+
+    addPageNumbers(pdf);
 
     pdf.save("quit-smoking-analytics.pdf");
 });
