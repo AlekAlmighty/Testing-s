@@ -2907,67 +2907,194 @@ color: var(--main-green);
   .progress-toggle { left: 14px; right: auto; bottom: 14px; }
 }
 
+/* Ensure Times New Roman across PDF */
+.pdf-page,
+.pdf-page * {
+    font-family: "Times New Roman", Times, serif !important;
+}
+
 /* Main wrapper */
 #print-area {
     max-width: 850px;
     margin: auto;
     padding: 25px;
-    font-family: "Poppins", sans-serif;
+    font-family: "Times New Roman", serif;
     background: #fff;
-}
-
-/* Title */
-.report-title {
-    text-align: center;
-    font-size: 28px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 25px;
-}
-
-/* Top stats grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    margin-bottom: 25px;
-}
-
-/* Stat cards */
-.stat-card {
-    background: #ffffff;
-    padding: 18px;
-    border-radius: 14px;
-    border: 1px solid #e5e5e5;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    text-align: center;
-}
-
-.stat-card h3 {
-    font-size: 16px;
-    color: #444;
-    margin-bottom: 10px;
-}
-
-.stat-value {
-    font-size: 32px;
-    font-weight: 700;
     color: #000;
-    margin-bottom: 6px;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: #666;
-}
-
-#print-area {
     position: absolute;
     top: -9999px;
     left: -9999px;
     width: 760px;
 }
 
+/* Title */
+.report-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 25px;
+    font-family: "Times New Roman", serif;
+}
+
+/* Professional Header */
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.pdf-header-left h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Times New Roman", serif;
+}
+
+.pdf-date {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.pdf-logo {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Divider */
+.pdf-divider {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 20px 0;
+}
+
+/* SUMMARY TEXT */
+.summary-text {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    text-align: justify;
+    font-family: "Times New Roman", serif;
+}
+
+/* Professional Analytics Grid */
+.pdf-stats,
+.pro-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.pro-stat-box {
+    padding: 18px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+
+.pro-stat-box h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.pro-stat-value {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.pro-stat-desc {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.pro-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #ffffff;
+    font-size: 16px;
+    border: 1px solid #dcdcdc;
+}
+
+.pro-stats-table th {
+    background: #f3f3f3;
+    padding: 12px;
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+}
+
+.pro-stats-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.pro-stats-table tr:hover {
+    background: #fafafa;
+}
+
+/* Report Card Section */
+.report-card {
+    margin-top: 25px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px;
+    border: 1px solid #000;
+}
+
+.report-card h2 {
+    font-size: 20px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+}
+
+/* Canvas */
+canvas {
+    width: 100% !important;
+    max-height: 300px;
+}
+
+/* WATERMARK */
+.pdf-watermark {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    font-size: 90px;
+    font-weight: 600;
+    transform: translate(-50%, -50%);
+    opacity: 0.05;
+    color: #000;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* Footer */
+.pdf-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.page-number {
+    text-align: center;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+/* Ensure PDF page is centered */
+.pdf-page {
+    position: relative;
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Download button */
 #print-pdf-btn {
     position: fixed;
     bottom: 20px;
@@ -2995,24 +3122,4 @@ color: var(--main-green);
 #print-pdf-btn:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0,0,0,0.4);
-}
-
-.report-card {
-    margin-top: 25px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 20px;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
-}
-
-.report-card h2 {
-    font-size: 20px;
-    margin-bottom: 15px;
-    color: #222;
-}
-
-canvas {
-    width: 100% !important;
-    max-height: 300px;
 }
