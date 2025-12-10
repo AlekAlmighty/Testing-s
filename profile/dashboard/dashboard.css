@@ -3011,6 +3011,32 @@ color: var(--main-green);
     opacity: 0.8;
 }
 
+.pro-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #ffffff;
+    font-size: 16px;
+    border: 1px solid #dcdcdc;
+}
+
+.pro-stats-table th {
+    background: #f3f3f3;
+    padding: 12px;
+    font-weight: bold;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+}
+
+.pro-stats-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.pro-stats-table tr:hover {
+    background: #fafafa;
+}
+
 /* Report Card Section */
 .report-card {
     margin-top: 25px;
