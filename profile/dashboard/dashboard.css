@@ -3016,3 +3016,194 @@ canvas {
     width: 100% !important;
     max-height: 300px;
 }
+
+/* Ensure Times New Roman across PDF */
+.pdf-page,
+.pdf-page * {
+    font-family: "Times New Roman", Times, serif !important;
+}
+
+/* Main wrapper */
+#print-area {
+    max-width: 850px;
+    margin: auto;
+    padding: 25px;
+    font-family: "Times New Roman", serif;
+    background: #fff;
+    color: #000;
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    width: 760px;
+}
+
+/* Title */
+.report-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 25px;
+    font-family: "Times New Roman", serif;
+}
+
+/* Professional Header */
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.pdf-header-left h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Times New Roman", serif;
+}
+
+.pdf-date {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.pdf-logo {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Divider */
+.pdf-divider {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 20px 0;
+}
+
+/* SUMMARY TEXT */
+.summary-text {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 28px;
+    text-align: justify;
+    font-family: "Times New Roman", serif;
+}
+
+/* Professional Analytics Grid */
+.pdf-stats,
+.pro-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.pro-stat-box {
+    padding: 18px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+
+.pro-stat-box h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.pro-stat-value {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.pro-stat-desc {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* Report Card Section */
+.report-card {
+    margin-top: 25px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px;
+    border: 1px solid #000;
+}
+
+.report-card h2 {
+    font-size: 20px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+}
+
+/* Canvas */
+canvas {
+    width: 100% !important;
+    max-height: 300px;
+}
+
+/* WATERMARK */
+.pdf-watermark {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    font-size: 90px;
+    font-weight: 600;
+    transform: translate(-50%, -50%);
+    opacity: 0.05;
+    color: #000;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* Footer */
+.pdf-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.page-number {
+    text-align: center;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+/* Ensure PDF page is centered */
+.pdf-page {
+    position: relative;
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Download button */
+#print-pdf-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 140px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#00ff66,#00cc52);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 1000;
+}
+
+#print-pdf-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+#print-pdf-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+}
