@@ -316,6 +316,11 @@
     </div>
   </div>
 
+<div id="pdf-options" style="position: fixed; bottom: 80px; left: 140px; font-family: 'Times New Roman', serif; display: flex; align-items: center; gap: 10px; background: #f8f8f8; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+  <input type="checkbox" id="includeTables" checked style="width:18px; height:18px; cursor:pointer;">
+  <label for="includeTables" style="margin:0; font-size:14px; cursor:pointer;">Include tables in PDF</label>
+</div>
+
   <button id="print-pdf-btn" title="Download PDF">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <path d="M5 20h14v-2H5v2zm7-18L5.33 9h3.34v4h6.66V9h3.34L12 2z"/>
@@ -375,44 +380,119 @@ logoutBtn.addEventListener('click', () => {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<div id="print-area">
-    <h1 class="report-title">Your Smoking Cessation Analytics</h1>
+<div id="print-area" class="pdf-page" style="display:none;">
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Money Saved</h3>
-            <p class="stat-value" id="moneySaved">₱1,540</p>
-            <span class="stat-label">₱ saved by not buying cigarettes</span>
+    <!-- BORDER FRAME -->
+    <div class="pdf-frame">
+
+        <!-- WATERMARK -->
+        <div class="pdf-watermark">Breathe Green</div>
+
+        <!-- HEADER -->
+        <div class="pdf-header">
+            <div>
+                <h1 class="pdf-title">Breathe Green – Smoking Cessation Report</h1>
+                <p class="pdf-date">Generated on: <span id="pdfDate"></span></p>
+            </div>
         </div>
-        <div class="stat-card">
-            <h3>Cigarettes Not Smoked</h3>
-            <p class="stat-value" id="cigsNotSmoked">84</p>
-            <span class="stat-label">Sticks avoided</span>
+
+        <hr class="pdf-divider">
+
+        <!-- SUMMARY SECTION -->
+        <h2 class="section-title">Official Summary</h2>
+        <p class="summary-text">
+            This official report outlines your smoking cessation progress based on tracked activity 
+            within the Breathe Green system. Your financial savings, cigarette reduction, streak 
+            duration, and estimated CO₂ impact highlight your ongoing improvement and long-term 
+            health benefits.
+        </p>
+
+        <!-- ANALYTICS GRID -->
+        <div class="pro-stats-grid">
+
+            <div class="pro-stat-box">
+                <h3>Money Saved</h3>
+                <p class="pro-stat-value" id="moneySaved">₱1,540</p>
+                <p class="pro-stat-desc">Total amount saved from avoided cigarette purchases</p>
+            </div>
+
+            <div class="pro-stat-box">
+                <h3>Cigarettes Not Smoked</h3>
+                <p class="pro-stat-value" id="cigsNotSmoked">84</p>
+                <p class="pro-stat-desc">Total sticks prevented</p>
+            </div>
+
+            <div class="pro-stat-box">
+                <h3>Days Streak</h3>
+                <p class="pro-stat-value" id="daysStreak">12 days</p>
+                <p class="pro-stat-desc">Duration of your smoke-free streak</p>
+            </div>
+
+            <div class="pro-stat-box">
+                <h3>CO₂ Prevented</h3>
+                <p class="pro-stat-value" id="co2Prevented">2.4 kg</p>
+                <p class="pro-stat-desc">Estimated environmental reduction</p>
+            </div>
+
         </div>
-        <div class="stat-card">
-            <h3>Days Streak</h3>
-            <p class="stat-value" id="daysStreak">12 days</p>
-            <span class="stat-label">Your current quit streak</span>
+
+        <!-- CHARTS -->
+<!-- Inside #print-area -->
+        <div id="charts-container">
+            <div class="report-card">
+                <h2 class="section-title">Daily Progress</h2>
+                <canvas id="progressChartPDF"></canvas>
+            </div>
+            <div class="report-card">
+                <h2 class="section-title">Weekly Savings Breakdown</h2>
+                <canvas id="savingsChartPDF"></canvas>
+            </div>
         </div>
-        <div class="stat-card">
-            <h3>CO₂ Prevented</h3>
-            <p class="stat-value" id="co2Prevented">2.4 kg</p>
-            <span class="stat-label">Reduced carbon footprint</span>
+
+
+        <!-- INSIGHTS -->
+        <div class="report-card">
+            <h2 class="section-title">Insights</h2>
+            <p class="summary-text">
+                Your streak is steadily increasing. Consider setting higher weekly savings goals 
+                or tracking additional health metrics. Regularly reviewing your daily progress 
+                encourages consistency and long-term success.
+            </p>
         </div>
+
+        <hr class="pdf-divider">
+
+        <!-- FOOTER -->
+        <div class="pdf-footer">
+            <p class="footer-text">Breathe Green © 2025 • Smoking Cessation Report</p>
+            <p class="page-number"></p>
+        </div>
+
     </div>
 
-    <div class="report-card">
-        <h2>Daily Progress</h2>
-        <canvas id="progressChartPDF" width="760" height="300"></canvas>
-    </div>
-
-    <div class="report-card">
-        <h2>Weekly Savings Breakdown</h2>
-        <canvas id="savingsChartPDF" width="760" height="300"></canvas>
-    </div>
 </div>
 
+
 <script>
+document.getElementById("pdfDate").innerText =
+    new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
+// Auto page-numbering after PDF generation
+function addPageNumbers(pdf) {
+    const total = pdf.internal.getNumberOfPages();
+
+    for (let i = 1; i <= total; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(10);
+        pdf.text(`Page ${i} of ${total}`, 105, 290, { align: "center" });
+    }
+    return pdf;
+}
+    
 const progressChartPDF = new Chart(document.getElementById('progressChartPDF'), {
     type: 'line',
     data: {
@@ -463,13 +543,21 @@ const savingsChartPDF = new Chart(document.getElementById('savingsChartPDF'), {
 
 document.getElementById("print-pdf-btn").addEventListener("click", async () => {
     const area = document.getElementById("print-area");
+    const includeCharts = document.getElementById("includeTables").checked; // <- fixed ID
+
+    const chartsContainer = document.getElementById("charts-container");
+    chartsContainer.style.display = includeCharts ? "block" : "none";
+
     area.style.display = "block";
     area.style.filter = "grayscale(100%)";
+
+    // Give the browser a moment to render
+    await new Promise(r => setTimeout(r, 100));
 
     const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
 
     area.style.display = "none";
-    area.style.filter = "";
+    chartsContainer.style.display = "block"; // restore
 
     const imgData = canvas.toDataURL("image/jpeg", 1.0);
     const pdf = new jspdf.jsPDF("p", "mm", "a4");
@@ -493,6 +581,8 @@ document.getElementById("print-pdf-btn").addEventListener("click", async () => {
 
     pdf.save("quit-smoking-analytics.pdf");
 });
+
+
 </script>
 
 </body>
